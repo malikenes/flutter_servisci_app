@@ -1,8 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_servisci_app/feature/home/home_view.dart';
-import 'package:flutter_servisci_app/firebase_options.dart';
+import 'package:flutter_servisci_app/feature/splash/splash_view.dart';
+import 'package:flutter_servisci_app/product/constants/string_constants.dart';
 import 'package:flutter_servisci_app/product/initialize/app_start.dart';
 
 Future<void> main() async {
@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Flutter Demo',
-      home: HomeView(),
+      title: StringConstants.appName,
+      home: SplashView(),
     );
   }
 }

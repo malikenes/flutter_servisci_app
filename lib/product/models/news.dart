@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_servisci_app/product/models/base_firebase_model.dart';
+import 'package:flutter_servisci_app/product/utility/custom_exception.dart';
 
 class News extends Equatable implements IdModel, BaseFirebaseModel<News> {
   const News({
@@ -59,8 +60,12 @@ class News extends Equatable implements IdModel, BaseFirebaseModel<News> {
   }
 
   @override
-  News? fromFirabase(DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    // TODO: implement fromFirabase
-    throw UnimplementedError();
+  News fromFirabase(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final value = snapshot.data();
+    if (value == null) {
+      throw FirebaseCustomException('data is nuul');
+    }
+    value.addEntries([MapEntry('id', snapshot.id)]);
+    return fromJson(value);
   }
 }

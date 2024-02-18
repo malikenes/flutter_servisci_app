@@ -36,7 +36,7 @@
     "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
     "editor.suggestSelection": "first",
     "vsintellicode.modify.editor.suggestSelection": "enabled",
-    "editor.fontSize": 20,
+    "editor.fontSize": 14,
     "editor.fontFamily": "JetBrains Mono",
     "editor.fontLigatures": true,
     "dart.debugExternalLibraries": true,
