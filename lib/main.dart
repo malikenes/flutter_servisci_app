@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_servisci_app/feature/auth/authentication_view.dart';
 import 'package:flutter_servisci_app/feature/home/home_view.dart';
 import 'package:flutter_servisci_app/feature/splash/splash_view.dart';
 import 'package:flutter_servisci_app/product/constants/string_constants.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: StringConstants.appName,
-      home: SplashView(),
+      home: AuthenticationView(),
     );
   }
 }

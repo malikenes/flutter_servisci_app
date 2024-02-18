@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:flutter_servisci_app/product/initialize/app_start.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,9 +7,6 @@ import 'package:flutter_servisci_app/feature/splash/splash_provider.dart';
 import 'package:flutter_servisci_app/product/constants/color_constants.dart';
 import 'package:flutter_servisci_app/product/constants/string_constants.dart';
 import 'package:flutter_servisci_app/product/enums/image_constants.dart';
-import 'package:kartal/kartal.dart';
-
-import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
@@ -27,8 +23,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
   @override
   void initState() {
     super.initState();
-
-    ref.read(splashProvider.notifier).checkApplicationVersion(''.version);
+    ref.read(splashProvider.notifier).checkApplicationVersion(AppStart.forceUpdateNumber);
   }
 
   @override
