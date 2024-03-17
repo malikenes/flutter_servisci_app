@@ -1,12 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_servisci_app/feature/home/home_provider.dart';
 import 'package:flutter_servisci_app/product/constants/color_constants.dart';
 import 'package:flutter_servisci_app/product/constants/string_constants.dart';
+import 'package:flutter_servisci_app/product/models/recommended.dart';
+import 'package:flutter_servisci_app/product/models/tag.dart';
+import 'package:flutter_servisci_app/product/widgets/card/home_news_card.dart';
+import 'package:flutter_servisci_app/product/widgets/card/recommended_card.dart';
 import 'package:flutter_servisci_app/product/widgets/text/subtitle_text.dart';
 import 'package:flutter_servisci_app/product/widgets/text/title_text.dart';
 part './subview/home_chips.dart';
 
-class HomeView extends StatelessWidget {
+final _homeProvider = StateNotifierProvider<HomeNotifier, HomeState>((ref) {
+  return HomeNotifier();
+});
+
+class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends ConsumerState<HomeView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() => ref.read(_homeProvider.notifier).fetchAndLoad());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,26 +72,28 @@ class _SearchTextField extends StatelessWidget {
   }
 }
 
-class _TagListView extends StatelessWidget {
+class _TagListView extends ConsumerWidget {
   const _TagListView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tagItems = ref.watch(_homeProvider).tags ?? [];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: SizedBox(
         height: 32,
         child: ListView.builder(
-          itemCount: 4,
+          itemCount: tagItems.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
-            if (index.isOdd) {
-              return const _PassiveChip();
+            final tagItem = tagItems[index];
+            if (tagItem.active ?? true) {
+              return _PassiveChip(tagItem);
             }
 
-            return const _ActiveChip();
+            return _ActiveChip(tagItem);
           },
         ),
       ),
@@ -77,73 +101,21 @@ class _TagListView extends StatelessWidget {
   }
 }
 
-class _BrowseHorizontalListView extends StatelessWidget {
+class _BrowseHorizontalListView extends ConsumerWidget {
   const _BrowseHorizontalListView();
-  static const dummyImage =
-      'https://firebasestorage.googleapis.com/v0/b/flutter-servisci-app.appspot.com/o/IMG_4113.jpg?alt=media&token=28e0e593-93f8-469c-8165-f4803887db12';
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final newsItems = ref.watch(_homeProvider).news;
+
     return SizedBox(
       height: 240,
       child: ListView.builder(
-        itemCount: 4,
+        itemCount: newsItems?.length ?? 0,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {
-          return const _HorizontalCard(dummyImage: dummyImage);
+          return HomeNewsCard(newsItem: newsItems?[index]);
         },
       ),
-    );
-  }
-}
-
-class _HorizontalCard extends StatelessWidget {
-  const _HorizontalCard({
-    required this.dummyImage,
-    super.key,
-  });
-
-  final String dummyImage;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Image.network(_BrowseHorizontalListView.dummyImage),
-        ),
-        Positioned.fill(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.bookmark_add_outlined,
-                  color: ColorConstants.white,
-                ),
-              ),
-              const Spacer(),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SubtitleText(
-                      value: 'Politics',
-                      color: ColorConstants.grayPrimary,
-                    ),
-                    SubtitleText(
-                      value: 'The latiest stıtıon in the presential election',
-                      color: ColorConstants.white,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
@@ -171,50 +143,19 @@ class _RecommendedRow extends StatelessWidget {
   }
 }
 
-class _RecommendedListview extends StatelessWidget {
+class _RecommendedListview extends ConsumerWidget {
   const _RecommendedListview();
-  static const dummyImage =
-      'https://firebasestorage.googleapis.com/v0/b/flutter-servisci-app.appspot.com/o/IMG_4113.jpg?alt=media&token=28e0e593-93f8-469c-8165-f4803887db12';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recomItems = ref.watch(_homeProvider).recommendeds ?? [];
     return ListView.builder(
-      itemCount: 5,
+      itemCount: recomItems.length,
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
-        return const _RecommendedCard(dummyImage: dummyImage);
+        return RecommendedCard(recoms: recomItems[index]);
       },
-    );
-  }
-}
-
-class _RecommendedCard extends StatelessWidget {
-  const _RecommendedCard({
-    required this.dummyImage,
-    super.key,
-  });
-
-  final String dummyImage;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 96,
-            child: Image.network(_RecommendedListview.dummyImage),
-          ),
-          const Expanded(
-            child: ListTile(
-              title: Text('UI/UX design'),
-              subtitle: Text('A simple Trick for creatibg color palette quicly.'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
